@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157595895-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-157595895-1');
+    </script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta property="og:url"           content="http://www.partelanoche.com/" />
+    <meta property="og:type"          content="website" />        
+    <meta property="og:image"         content="http://www.partelanoche.com/logo.png" />
+    <meta property="og:description"   content="Calcula los turnos de noche de la guardia en 1 segundo. A esas horas necesitas irte a dormir cuanto antes y Parte La Noche piensa por ti. Especifica el número de turnos y la hora a la que acaba la guardia y sabrás al instante los horarios de cada turno. Fácil." />
+    <link rel="icon" href="favicon.ico">
+    <title>Parte la Noche</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+    <script src="facebook-server.js"></script>
+    <style>
+        /* Links */
+        a,
+        a:focus,
+        a:hover {
+            color: #fff;
+        }
+        /* Custom default button */
+        .btn-default,
+        .btn-default:hover,
+        .btn-default:focus {
+            color: #333;
+            text-shadow: none; /* Prevent inheritence from `body` */
+            border: 1px solid #fff;
+            margin: 0 15px;            
+        }
+        .btn-facebook-share{
+            background: url("facebook+share+button.png") no-repeat;
+            height: 40px;
+            width: 90px;
+            cursor: pointer;
+            display: inline-block;
+        }        
+        html,
+        body {
+            height: 100%;
+            background-color: darkcyan;
+        }
+        body {
+            color: #fff;
+            text-align: center;
+            text-shadow: 0 1px 3px rgba(0,0,0,.5);
+        }
+        .site-wrapper {
+            display: table;
+            width: 100%;
+            height: 100%; /* For at least Firefox */
+            min-height: 100%;
+            -webkit-box-shadow: inset 0 0 100px rgba(0,0,0,.5);
+            box-shadow: inset 0 0 100px rgba(0,0,0,.5);
+        }
+        .site-wrapper-inner {
+            display: table-cell;
+            vertical-align: top;
+        }
+        .cover-container {
+            margin-right: auto;
+            margin-left: auto;
+        }
+        .inner {
+            padding: 30px;
+        }
+        .masthead-brand {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .masthead-nav > li {
+            display: inline-block;
+        }
+        .masthead-nav > li + li {
+            margin-left: 20px;
+        }
+        .masthead-nav > li > a {
+            padding-right: 0;
+            padding-left: 0;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff; /* IE8 proofing */
+            color: rgba(255,255,255,.75);
+            border-bottom: 2px solid transparent;
+        }
+        .masthead-nav > li > a:hover,
+        .masthead-nav > li > a:focus {
+            background-color: transparent;
+            border-bottom-color: #a9a9a9;
+            border-bottom-color: rgba(255,255,255,.25);
+        }
+        .masthead-nav > .active > a,
+        .masthead-nav > .active > a:hover,
+        .masthead-nav > .active > a:focus {
+            color: #fff;
+            border-bottom-color: #fff;
+        }
+        @media (min-width: 768px) {
+            .masthead-brand {
+                float: left;
+            }
+            .masthead-nav {
+                float: right;
+            }
+        }
+        .cover {
+            padding: 0 20px;
+        }
+        .cover .btn-lg {
+            padding: 10px 20px;
+            font-weight: bold;
+        }
+        
+        .cover-heading {
+            font-size: 28px;
+            color: whitesmoke;
+            line-height: 1.2;
+        }
+
+        #title.cover-heading{
+            margin-bottom: 30px;
+            color: navajowhite;
+        }
+
+        #params{
+            border-bottom: 3px solid navajowhite;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+        }
+
+        .shift {
+            background: red; /* For browsers that do not support gradients */
+            background: -webkit-linear-gradient(transparent, cyan 7%, transparent 100%); /* For Safari 5.1 to 6.0 */
+            background: -o-linear-gradient(transparent, cyan 7%, transparent 100%); /* For Opera 11.1 to 12.0 */
+            background: -moz-linear-gradient(transparent, cyan 7%, transparent 100%); /* For Firefox 3.6 to 15 */
+            background: linear-gradient(transparent, cyan 7%, transparent 100%); /* Standard syntax */
+
+            min-height: 50px;
+            font-size: 28px;
+            color: yellow;
+            padding: 10px;
+        }
+
+        .shift-duration{
+            font-size: 16px;
+            font-style: italic;
+            color: lightblue;
+            margin-left: 30px;
+        }
+
+        .current-time{
+            font-size: 16px;
+            font-style: italic;
+            color: lightblue;
+        }
+
+        .current-time-label{
+            color: yellow;
+        }
+
+        .shift-daylight{
+                font-size: 14px;
+                color: greenyellow;
+        }
+
+        #daylight-message{
+            background-color: aquamarine;
+            color: brown;
+            text-shadow: none;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        #initial-end-separator{
+        	color: navajowhite;
+        }
+
+        #total-time{
+        	font-size: 18px;
+        }
+
+        #total-shifts-time{
+        	color: yellow;
+        }
+
+        .btn-inc-dec, .btn-now{
+              height: 25px;
+              line-height: 0px;
+              border-radius: 12px;
+              color: grey;
+              background-color: lightgrey;
+        }
+
+        .btn-inc-dec{
+              width: 25px;
+              height: 25px;
+              line-height: 0px;
+              border-radius: 12px;
+              color: grey;
+              font-size: 16px;
+              background-color: lightgrey;
+        }
+
+        .btn-now{
+              height: 25px;
+              line-height: 0px;
+              border-radius: 12px;
+              color: grey;
+              font-size: 14px;
+              background-color: lightgrey;
+        }
+
+        .time{
+            font-size: 32px;
+        }
+
+        #target-time{
+            margin-top: 5px;
+        }
+
+        #buttons.lead{
+            margin-top: 40px;
+        }
+
+        #marker{
+            text-align: left;
+            color: yellow;
+            border-top: 2px solid;
+            position: absolute;
+        }
+
+        .footer{
+            color: lightgrey;
+            margin: 3px 0;
+        }
+
+        #visitor_counter{
+            position: absolute;
+            right: 5px;
+        }
+        
+        #clock-button, #daylight-message { display: none; }
+        
+        .mastfoot {
+            color: #999; /* IE8 proofing */
+            color: rgba(255,255,255,.5);
+        }
+        @media (min-width: 768px) {
+            /* Pull out the header and footer */
+            .masthead {
+                position: fixed;
+                top: 0;
+            }
+            .mastfoot {
+                position: fixed;
+                bottom: 0;
+            }
+            /* Start the vertical centering */
+            .site-wrapper-inner {
+                vertical-align: middle;
+            }
+            /* Handle the widths */
+            .masthead,
+            .mastfoot,
+            .cover-container {
+                width: 100%; /* Must be percentage or pixels for horizontal alignment */
+            }
+        }
+        @media (min-width: 992px) {
+            .masthead,
+            .mastfoot,
+            .cover-container {
+                width: 800px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="site-wrapper">
+    <div class="site-wrapper-inner">
+        <div class="cover-container">
+            <div class="masthead clearfix">
+                <div class="inner">
+                    <h3 class="masthead-brand"></h3>
+                </div>
+            </div>
+            <div class="inner cover" id="">
+                <!--<img id="logo" src='favicon.ico' class="cover-heading" />-->
+                <h1 id="title" class="cover-heading">¡Parte la Noche!</h1>
+                <div id="marker"></div>
+                <h1 id="params" class="cover-heading">
+                    <p>                   
+	                    <button id="button-dec-initial" class="btn-inc-dec" onclick="javascript: decreaseInitialTime()"><</button>
+	                    desde
+	                    <span id="initial-hour"></span>
+	                    <button id="button-inc-initial" class="btn-inc-dec" onclick="javascript: increaseInitialTime()">></button>
+	                    <button id="button-now" class="btn-now" hidden onclick="javascript: setInitialTimeToNow()">ahora</button>
+	                    <!-- <span id="initial-end-separator">|</span>	                                         -->
+                    </p>                    
+                    <p>
+                    	<button id="button-dec-target" class="btn-inc-dec" onclick="javascript: decreaseTargetTime()"><</button>
+	                    hasta
+	                    <span id="target-hour"></span>
+	                    <button id="button-inc-target" class="btn-inc-dec" onclick="javascript: increaseTargetTime()">></button>
+                    </p>
+                    <div id="daylight-message"></div>
+                    <p id="total-time">
+	                    Tiempo a partir:
+	                    <span id="total-shifts-time">Tiempo a partir</span>
+                    </p>                     
+                    <p>
+	                    <button id="button-dec-shift" class="btn-inc-dec" onclick="javascript: decreaseShiftCount()">-</button>
+	                    <span id="current-shifts"></span>
+	                    turnos
+	                    <button id="button-inc-shift" class="btn-inc-dec" onclick="javascript: increaseShiftCount()">+</button>
+                    </p>                    
+                </h1>
+
+                <div id="initial-time" class="time"></div>
+                <div id="shifts">
+                    
+                </div>
+                
+                <p id="buttons" class="lead">                    
+                    <a href="javascript: recalculate()" class="btn btn-lg btn-default">recalcular</a>
+                    <a id="clock-button" href="javascript: stopStartClock()" class="btn btn-lg btn-default">Parar</a>
+                </p>
+                <p>
+                    Si te gusta ParteLaNoche, considera contribuir a su mantenimiento con una donación.
+                    <form action="https://www.paypal.com/donate" method="post" target="_top">
+						<input type="hidden" name="hosted_button_id" value="RQCP4EZ7YHRYW" />
+						<input type="image" src="https://www.paypalobjects.com/es_ES/ES/i/btn/btn_donate_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+						<img alt="" border="0" src="https://www.paypal.com/es_ES/i/scr/pixel.gif" width="1" height="1" />
+					</form>
+                </p>
+                <p>
+                    <a href="javascript: shareOnFacebook()">¡Compártelo en Facebook!</a>
+                </p>
+            </div>           
+        </div>
+    </div>
+</div>
+<div align="center" class="footer">
+    <div id="visitor_counter"><script type="text/javascript" src="visitors_js.php"></script></div>
+  Hecho con cariño <b>♥</b> para los residentes de Cirugía Ortopédica y Traumatología del Hospital Clínic de Barcelona.<br/>Para cualquier consulta, contacta a <a href="mailto:lezkafree+partelanoche@gmail.com" target="_blank">Lezka</a>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="jquery.cookie.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script>
+    const MINMUM_TARGET_HOUR = 5;
+    const MAXIMUM_TARGET_HOUR = 11;
+
+    var interval = null;
+    var markerInterval = null;
+    var numShifts = 2;
+    var targetHour = 8;
+    var targetMinutes = 0;
+    var initialHour = 22;
+    var initialMinutes = 0;
+    var millisecondsPerShift;
+    var targetMilliseconds;
+    var isClockTicking;
+    var daylightSavingDifference = 0;
+    var useCurrentTime = true;
+    var referenceTime = new Date();
+    var shifts = [];
+
+    function calculateMillisecondsToTargetHour(){
+        var startingDate = useCurrentTime ? referenceTime : createDate(initialHour, initialMinutes);
+     
+        var hoursleft = targetHour-startingDate.getHours();
+        var minutesleft = targetMinutes-startingDate.getMinutes();
+        var secondsleft = 0-startingDate.getSeconds();
+        var currentMilliseconds = startingDate.getTime();
+
+        if(hoursleft < 0){
+          hoursleft += 24;
+        }
+        else if (hoursleft == 0 && targetMinutes < startingDate.getMinutes())
+        {
+            hoursleft = 24;
+        }        
+
+        var millisecondsToTargetHour = (secondsleft * 1000) 
+                                        + (minutesleft * 60 * 1000) 
+                                        + (hoursleft * 60 * 60 * 1000);
+                
+        targetMilliseconds = currentMilliseconds + millisecondsToTargetHour;
+
+        daylightSavingDifference = getDaylightSavingDifference(currentMilliseconds, targetMilliseconds);
+
+        millisecondsToTargetHour += daylightSavingDifference * 60 * 60 * 1000;
+
+        return millisecondsToTargetHour;
+    }
+
+    function calculateShifts()
+    {
+        var currentMilliseconds;
+        if (useCurrentTime)
+            currentMilliseconds = referenceTime.getTime();
+        else
+            currentMilliseconds = createDate(initialHour, initialMinutes).getTime();
+        
+        millisecondsToTargetHour = calculateMillisecondsToTargetHour();
+        millisecondsPerShift = millisecondsToTargetHour / numShifts;                        
+
+        var millisecondsToNextShift = currentMilliseconds;
+
+        shifts = [];
+        for (var i = 1; i <= numShifts; i++) {        	
+            millisecondsToNextShift += millisecondsPerShift;
+            printShift(millisecondsToNextShift, i);
+            shifts.push({'endTime': millisecondsToNextShift, 'number': i});
+        };
+
+        updateTotalTime();
+    }
+
+    function updateTotalTime(){
+        $('#total-shifts-time').html(convertMillisecondsToReadableTime(millisecondsToTargetHour));    	
+    }
+
+    function createDate(hours, minutes){
+        var newDate = new Date();
+        newDate.setHours(hours);
+        newDate.setMinutes(minutes);
+        newDate.setSeconds(0);
+        newDate.setMilliseconds(0);
+
+        //if (hours <= 12 && referenceTime.getHours() <= 23)        
+          //  newDate.setDate(newDate.getDate() + 1);
+
+        if (hours < 12 && referenceTime.getHours() > 12)        
+            newDate.setDate(newDate.getDate() + 1);
+
+        if (hours > 12 && referenceTime.getHours() <= 12)        
+            newDate.setDate(newDate.getDate() - 1);
+
+
+
+
+
+        return newDate;
+    }
+
+    function printShift(endTime, shiftId)
+    {
+        //if the shift is already painted, we update the duration time
+        if ($('#shift-'+shiftId).length > 0)
+        {
+            $('#shift-'+shiftId+' .shift-duration').html(convertMillisecondsToReadableTime(millisecondsPerShift));   
+        }
+
+        //if the shift doesn't exist we append it
+        if ($('#shifts #end-shift-'+shiftId).length == 0)
+        {
+            $('#shifts').append(shiftDivTag(shiftId));
+        }
+
+        var daylightShiftDifference = getDaylightSavingDifference(endTime - millisecondsPerShift, endTime);        
+        var shiftTime = new Date(endTime);
+        var mins = ('0'+shiftTime.getMinutes()).slice(-2);
+        var secs = ('0'+shiftTime.getSeconds()).slice(-2);
+        var hours = shiftTime.getHours();
+
+        $('#end-shift-'+shiftId).html(hours+':'+mins +':' +secs+' h');
+
+        if (daylightShiftDifference != 0)
+            $('#daylight-'+shiftId).html("ya se ha tenido en cuenta que durante este turno se cambiará la hora ("+daylightMessage()+")");            
+        else
+            $('#daylight-'+shiftId).hide();
+    }
+
+    function shiftDivTag(shiftId){
+        return '<div id="shift-'+shiftId+'" class="shift">turno '+shiftId
+        +' <span class="shift-duration">'+convertMillisecondsToReadableTime(millisecondsPerShift)+'</span>'
+        +'<div id="daylight-'+shiftId+'" class="shift-daylight">saving time</div>'
+        +'</div>'        
+                    +'<div id="end-shift-'+shiftId+'" class="time"></div>';
+    }
+
+    function addMillisecondsToCurrentDate(milliseconds){
+        var currentMilliseconds = Date.now();
+        totalMilliseconds = currentMilliseconds + milliseconds;
+        return totalMilliseconds;
+    }
+
+    function convertMillisecondsToReadableTime(milliseconds){     
+        var hours = Math.floor(milliseconds / 36e5),
+            mins = Math.floor((milliseconds % 36e5) / 6e4),
+            secs = Math.floor((milliseconds % 6e4) / 1000);
+            return hours+' horas '+('0'+mins).slice(-2)+' minutos';  
+    }
+
+    function increaseShiftCount() {
+        if (numShifts < 10)
+        {
+            numShifts++;
+            updateShitfCount(); 
+        }
+    }
+
+    function decreaseShiftCount() {
+        if (numShifts > 1){
+            numShifts--;
+            updateShitfCount();
+        }        
+    }
+
+    function updateShitfCount(){
+        $('#current-shifts').html(numShifts);        
+        $('#shifts').empty();
+        calculateShifts();
+    }
+
+    function increaseTargetTime() {
+        if (targetHour > 10)
+            return;
+
+        if (targetMinutes == 45)
+        {
+            targetMinutes = 0;
+            targetHour++;
+        }
+        else 
+            targetMinutes += 15;
+
+        updateTargetHour();
+    }
+
+    function decreaseTargetTime() {
+        if (targetHour < 4 || (initialHour < 12 && targetHour <= initialHour))
+        	return;
+        
+        if (targetMinutes == 0)
+        {
+            targetMinutes = 45;
+            targetHour--;
+        }
+        else
+            targetMinutes -= 15;
+
+
+        updateTargetHour();
+
+        //if (targetHour <= initialHour && initialHour < 10){
+        //    initialHour = targetHour - 1;
+        //    updateInitialHour();
+        //}
+    }
+
+    function setInitialTimeFromCurrent(){
+        if (useCurrentTime)
+        {
+            initialHour = referenceTime.getHours();
+            initialMinutes  = (Math.round(referenceTime.getMinutes()/15) * 15) % 60;
+            useCurrentTime = false;
+            $('#button-now').show();
+        }
+    }
+
+    function setInitialTimeToNow() {
+        useCurrentTime = true;
+        updateInitialHour();
+        $('#button-now').hide();
+    }
+
+    function increaseInitialTime() {
+        setInitialTimeFromCurrent();
+        
+        if (initialHour > 23 || (initialHour < 12  && initialHour > targetHour - 2))
+            return;                        
+        
+        if (initialMinutes == 45)
+        {
+            initialMinutes = 0;
+            if (initialHour == 23)
+                initialHour = 0;
+            else
+                initialHour++;
+        }
+        else
+            initialMinutes += 15;
+
+        updateInitialHour();
+    }
+
+    function decreaseInitialTime() {        
+        setInitialTimeFromCurrent(); 
+        
+        if (initialHour > 12  && initialHour < 18)
+            return;           
+
+        if (initialMinutes == 0)
+        {
+            initialMinutes = 45;
+            if (initialHour == 0)
+                initialHour = 23;
+            else
+                initialHour--;
+        }
+        else
+            initialMinutes -= 15;        
+
+        updateInitialHour();
+    }
+
+    function updateTargetHour(){
+        $('#target-hour').html(targetHour+':'+('0'+targetMinutes).slice(-2)+' h');
+        showHideTargetButtons();
+        calculateShifts();
+    }
+
+    function showHideTargetButtons(){
+        if (targetHour == MINMUM_TARGET_HOUR)
+            $('#button-dec-target').disabled = true;
+        else
+            $('#button-dec-target').disabled = false;
+
+        if (targetHour == MAXIMUM_TARGET_HOUR)
+            $('#button-inc-target').hide();            
+        else
+            $('#button-inc-target').show();
+    }
+
+    function updateInitialHour() {
+
+        if (useCurrentTime){
+            $('#initial-hour').html('<span class="current-time-label">Ahora</span> <span class="current-time">('+formatRightNow()+')</span>');            
+            $('#initial-time').html(formatRightNow());
+            initialHour = new Date().getHours();
+        }            
+        else{
+            $('#initial-hour').html(initialHour+':'+('0'+initialMinutes).slice(-2)+' h');
+            $('#initial-time').html(formatHoursMinutes(initialHour, initialMinutes));
+        }            
+        
+        calculateShifts();
+    }
+
+    function formatRightNow(){
+        return referenceTime.getHours()+':'+('0'+referenceTime.getMinutes()).slice(-2)+':'+('0'+referenceTime.getSeconds()).slice(-2)+' h';
+    }
+
+    function formatHoursMinutes(hours, minutes){
+        return hours+':'+('0'+minutes).slice(-2)+':00 h';
+    }
+
+    function stopStartClock() {
+
+        isClockTicking ? pause() : start();                
+    }
+
+    function start(){
+        calculateShifts();
+        
+        interval = setInterval(calculateShifts, 1000);
+        isClockTicking = true;
+        refreshStopStartButton();    
+    }
+
+    function saveSession(){        
+        $.cookie("referenceTime", referenceTime.getTime(), { expires : 1 });
+        $.cookie("initialHour", initialHour, { expires : 1 });
+        $.cookie("initialMinutes", initialMinutes, { expires : 1 });
+        $.cookie("targetHour", targetHour, { expires : 1 });
+        $.cookie("targetMinutes", targetMinutes, { expires : 1 });
+        $.cookie("numShifts", numShifts, { expires : 1 });
+        $.cookie("saved", true, { expires : 1 });
+    }
+
+    function readSession(){        
+        if ($.cookie('saved') == 'true')
+        {
+            referenceTime = new Date(parseInt($.cookie('referenceTime')));
+            initialHour = parseInt($.cookie('initialHour'));
+            initialMinutes = parseInt($.cookie('initialMinutes'));
+            targetHour = parseInt($.cookie('targetHour'));
+            targetMinutes = parseInt($.cookie('targetMinutes'));
+            numShifts = parseInt($.cookie('numShifts'));
+        }
+    }
+
+    function clearSession(){
+        $.removeCookie("referenceTime");
+        $.removeCookie("initialHour");
+        $.removeCookie("initialMinutes");
+        $.removeCookie("targetHour");
+        $.removeCookie("targetMinutes");
+        $.removeCookie("numShifts");
+        $.cookie("saved", false, { expires : 20 * 365 });
+    }
+
+    function run(){        
+        updateInitialHour();
+        updateTargetHour();
+        updateShitfCount();
+        calculateShifts();        
+    }
+
+    function recalculate(){
+        clearSession();
+        referenceTime = new Date();
+        run();
+        saveSession();
+    }
+
+    function pause(){
+        if (interval)
+            clearInterval(interval);
+
+        isClockTicking = false;
+        refreshStopStartButton();
+    }
+
+    function refreshStopStartButton()
+    {
+        isClockTicking ? $("#clock-button").html("parar") : $("#clock-button").html("iniciar");
+    }
+
+    function startMarker(){
+        updateMarker();
+        markerInterval = setInterval(updateMarker, 1000)        
+    }
+
+    function updateMarker(){
+        var now = new Date();         
+        var currentMilliseconds = now.getTime();
+        var startingDate = useCurrentTime ? referenceTime : createDate(initialHour, initialMinutes);
+        var endDate = createDate(targetHour, targetMinutes);       
+
+        //if (currentMilliseconds > shifts[shifts.length - 1].endTime)
+        if (currentMilliseconds > endDate.getTime())
+            moveMarker(now, 0, startingDate);
+        else if (currentMilliseconds < startingDate.getTime())
+        {
+        	moveMarker(now, -1, startingDate);
+        }	            
+        else
+        {
+            for (var i = shifts.length - 1; i >= 0; i--) {            
+                if (currentMilliseconds < shifts[i].endTime)
+                {
+                    if (i == 0)
+                        moveMarker(now, 1, startingDate);
+                    else
+                        moveMarker(now, shifts[i].number , shifts[i - 1].endTime);                    
+                }
+            }
+        }       
+
+    }
+
+    function moveMarker(currentTime, shiftId, refTime){
+
+        var currentTimeString = currentTime.getHours()+':'+('0'+currentTime.getMinutes()).slice(-2)+':'+('0'+currentTime.getSeconds()).slice(-2)+' h';
+        var markerTop = 0;
+        $('#marker').html(currentTimeString);
+
+        if (shiftId == 0)
+        {
+            markerTop = $('#shifts').position().top + $('#shifts').height();
+            $('#marker').css('color', 'navajowhite');
+            $('#marker').html('Fin de Noche - '+currentTimeString);
+        }
+        else if (shiftId == -1)
+        {
+            markerTop = $('#shifts').position().top - $('#marker').height();
+            $('#marker').css('color', 'navajowhite');
+            $('#marker').html('Pre-partición - '+currentTimeString);
+        }
+        else
+        {
+            var currentMilliseconds = currentTime.getTime();
+            var baseCurrentShiftMilliseconds = currentMilliseconds - refTime;
+            var pixelsWithinShift = baseCurrentShiftMilliseconds * $('#shift-'+shiftId).height() / millisecondsPerShift;
+
+            $('#marker').css('color', 'yellow');
+            $('#marker').html('turno '+shiftId+' - '+currentTimeString);         
+            var shiftTop = $('#shift-'+shiftId).position().top;
+            markerTop = shiftTop + pixelsWithinShift;
+        }
+        
+        $('#marker').css('top', markerTop +'px');
+    }
+
+    function isDST(t) { //t is the date object to check, returns true if daylight saving time is in effect.
+        var jan = new Date(t.getFullYear(),0,1);
+        var jul = new Date(t.getFullYear(),6,1);
+        return Math.min(jan.getTimezoneOffset(),jul.getTimezoneOffset()) == t.getTimezoneOffset();  
+    }
+
+    function getDaylightSavingDifference(initialMilliseconds, targetMilliseconds){
+        var initialDate = new Date(initialMilliseconds);
+        var targetDate = new Date(targetMilliseconds);
+
+        return isDST(initialDate) - isDST(targetDate);        
+    }
+
+    function daylightMessage(){
+        if (daylightSavingDifference == -1)
+            return 'a las 2h serán las 3h';
+        else if (daylightSavingDifference == 1)
+            return 'a las 3h serán las 2h';
+        else
+            return '';
+    }
+
+    function setDaylightMessage(){
+        var message = daylightMessage();
+        if (message.length > 0){
+            $('#daylight-message').show();
+            $('#daylight-message').html('en nuestros cálculos ya tenemos en cuenta que durante esta guardia se cambiará la hora ('+ message +')');        
+        }
+    }
+
+    //start();
+    readSession();
+    run();
+    setDaylightMessage();
+    startMarker();
+    
+</script>
+</body>
+</html>
