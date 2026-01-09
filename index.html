@@ -1,845 +1,578 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157595895-1"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'UA-157595895-1');
-    </script>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <meta property="og:url"           content="http://www.partelanoche.com/" />
-    <meta property="og:type"          content="website" />        
-    <meta property="og:image"         content="http://www.partelanoche.com/logo.png" />
-    <meta property="og:description"   content="Calcula los turnos de noche de la guardia en 1 segundo. A esas horas necesitas irte a dormir cuanto antes y Parte La Noche piensa por ti. Especifica el número de turnos y la hora a la que acaba la guardia y sabrás al instante los horarios de cada turno. Fácil." />
-    <link rel="icon" href="favicon.ico">
     <title>Parte la Noche</title>
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
-    <script src="facebook-server.js"></script>
+    <link rel="icon" href="favicon.ico">
+    <link rel="icon" type="image/png" href="favicon.png">
     <style>
-        /* Links */
-        a,
-        a:focus,
-        a:hover {
-            color: #fff;
+        :root {
+            --primary: #008080;
+            --accent: #f9c846;
+            --bg: #f4f8fb;
+            --card-bg: #fff;
+            --text: #222;
+            --header: #005a5a;
+            --button: #008080;
+            --button-hover: #005a5a;
+            --button-text: #fff;
+            --shift-bg: #e6f7fa;
+            --shift-border: #b2dfdb;
         }
-        /* Custom default button */
-        .btn-default,
-        .btn-default:hover,
-        .btn-default:focus {
-            color: #333;
-            text-shadow: none; /* Prevent inheritence from `body` */
-            border: 1px solid #fff;
-            margin: 0 15px;            
-        }
-        .btn-facebook-share{
-            background: url("facebook+share+button.png") no-repeat;
-            height: 40px;
-            width: 90px;
-            cursor: pointer;
-            display: inline-block;
-        }        
-        html,
-        body {
+        html, body {
             height: 100%;
-            background-color: darkcyan;
+            margin: 0;
+            padding: 0;
         }
         body {
-            color: #fff;
-            text-align: center;
-            text-shadow: 0 1px 3px rgba(0,0,0,.5);
+            min-height: 100vh;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
         }
-        .site-wrapper {
-            display: table;
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 24px 8px 0 8px;
+            max-width: 420px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        .header-icon {
+            font-size: 2.2em;
+            color: var(--primary);
+        }
+        h1 {
+            color: var(--header);
+            font-size: 1.7em;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: 0.01em;
+        }
+        .params {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 2px 12px 0 rgba(0,0,0,0.06);
+            padding: 18px 14px 10px 14px;
+            margin-bottom: 18px;
             width: 100%;
-            height: 100%; /* For at least Firefox */
-            min-height: 100%;
-            -webkit-box-shadow: inset 0 0 100px rgba(0,0,0,.5);
-            box-shadow: inset 0 0 100px rgba(0,0,0,.5);
         }
-        .site-wrapper-inner {
-            display: table-cell;
-            vertical-align: top;
-        }
-        .cover-container {
-            margin-right: auto;
-            margin-left: auto;
-        }
-        .inner {
-            padding: 30px;
-        }
-        .masthead-brand {
-            margin-top: 10px;
+        .params-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             margin-bottom: 10px;
+            flex-wrap: wrap;
         }
-        .masthead-nav > li {
-            display: inline-block;
+        .params-row:last-child { margin-bottom: 0; }
+        .params-label {
+            font-weight: 500;
+            color: var(--primary);
         }
-        .masthead-nav > li + li {
-            margin-left: 20px;
+        .btn {
+            background: var(--button);
+            color: var(--button-text);
+            border: none;
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s;
+            outline: none;
         }
-        .masthead-nav > li > a {
-            padding-right: 0;
-            padding-left: 0;
-            font-size: 16px;
-            font-weight: bold;
-            color: #fff; /* IE8 proofing */
-            color: rgba(255,255,255,.75);
-            border-bottom: 2px solid transparent;
+        .btn:active, .btn:focus, .btn:hover {
+            background: var(--button-hover);
         }
-        .masthead-nav > li > a:hover,
-        .masthead-nav > li > a:focus {
-            background-color: transparent;
-            border-bottom-color: #a9a9a9;
-            border-bottom-color: rgba(255,255,255,.25);
+        .btn-small {
+            padding: 4px 10px;
+            font-size: 0.95em;
         }
-        .masthead-nav > .active > a,
-        .masthead-nav > .active > a:hover,
-        .masthead-nav > .active > a:focus {
-            color: #fff;
-            border-bottom-color: #fff;
+        .shift-card {
+            background: var(--shift-bg);
+            border: 1px solid var(--shift-border);
+            border-radius: 12px;
+            margin: 10px 0;
+            padding: 12px 10px 8px 10px;
+            box-shadow: 0 1px 4px 0 rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            min-width: 320px;
+            max-width: 600px;
+            width: 90vw;
         }
-        @media (min-width: 768px) {
-            .masthead-brand {
-                float: left;
+        .shift-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 2px;
+        }
+        .shift-duration {
+            font-size: 0.98em;
+            color: #00796b;
+            margin-bottom: 2px;
+        }
+        .shift-time {
+            font-size: 1.1em;
+            color: var(--accent);
+            font-weight: 500;
+        }
+        .time {
+            font-size: 1.2em;
+            color: var(--primary);
+            margin: 8px 0 0 0;
+        }
+        .footer {
+            color: #888;
+            font-size: 0.98em;
+            margin: 30px 0 10px 0;
+            text-align: center;
+        }
+        a { color: var(--primary); text-decoration: underline; }
+        .residente-name {
+            color: #8B4513; /* SaddleBrown, goes well with teal and medical palette */
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 12px 2vw 0 2vw;
+                max-width: 100vw;
             }
-            .masthead-nav {
-                float: right;
-            }
-        }
-        .cover {
-            padding: 0 20px;
-        }
-        .cover .btn-lg {
-            padding: 10px 20px;
-            font-weight: bold;
-        }
-        
-        .cover-heading {
-            font-size: 28px;
-            color: whitesmoke;
-            line-height: 1.2;
-        }
-
-        #title.cover-heading{
-            margin-bottom: 30px;
-            color: navajowhite;
-        }
-
-        #params{
-            border-bottom: 3px solid navajowhite;
-            padding-bottom: 5px;
-            margin-bottom: 20px;
-        }
-
-        .shift {
-            background: red; /* For browsers that do not support gradients */
-            background: -webkit-linear-gradient(transparent, cyan 7%, transparent 100%); /* For Safari 5.1 to 6.0 */
-            background: -o-linear-gradient(transparent, cyan 7%, transparent 100%); /* For Opera 11.1 to 12.0 */
-            background: -moz-linear-gradient(transparent, cyan 7%, transparent 100%); /* For Firefox 3.6 to 15 */
-            background: linear-gradient(transparent, cyan 7%, transparent 100%); /* Standard syntax */
-
-            min-height: 50px;
-            font-size: 28px;
-            color: yellow;
-            padding: 10px;
-        }
-
-        .shift-duration{
-            font-size: 16px;
-            font-style: italic;
-            color: lightblue;
-            margin-left: 30px;
-        }
-
-        .current-time{
-            font-size: 16px;
-            font-style: italic;
-            color: lightblue;
-        }
-
-        .current-time-label{
-            color: yellow;
-        }
-
-        .shift-daylight{
-                font-size: 14px;
-                color: greenyellow;
-        }
-
-        #daylight-message{
-            background-color: aquamarine;
-            color: brown;
-            text-shadow: none;
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-
-        #initial-end-separator{
-        	color: navajowhite;
-        }
-
-        #total-time{
-        	font-size: 18px;
-        }
-
-        #total-shifts-time{
-        	color: yellow;
-        }
-
-        .btn-inc-dec, .btn-now{
-              height: 25px;
-              line-height: 0px;
-              border-radius: 12px;
-              color: grey;
-              background-color: lightgrey;
-        }
-
-        .btn-inc-dec{
-              width: 25px;
-              height: 25px;
-              line-height: 0px;
-              border-radius: 12px;
-              color: grey;
-              font-size: 16px;
-              background-color: lightgrey;
-        }
-
-        .btn-now{
-              height: 25px;
-              line-height: 0px;
-              border-radius: 12px;
-              color: grey;
-              font-size: 14px;
-              background-color: lightgrey;
-        }
-
-        .time{
-            font-size: 32px;
-        }
-
-        #target-time{
-            margin-top: 5px;
-        }
-
-        #buttons.lead{
-            margin-top: 40px;
-        }
-
-        #marker{
-            text-align: left;
-            color: yellow;
-            border-top: 2px solid;
-            position: absolute;
-        }
-
-        .footer{
-            color: lightgrey;
-            margin: 3px 0;
-        }
-
-        #visitor_counter{
-            position: absolute;
-            right: 5px;
-        }
-        
-        #clock-button, #daylight-message { display: none; }
-        
-        .mastfoot {
-            color: #999; /* IE8 proofing */
-            color: rgba(255,255,255,.5);
-        }
-        @media (min-width: 768px) {
-            /* Pull out the header and footer */
-            .masthead {
-                position: fixed;
-                top: 0;
-            }
-            .mastfoot {
-                position: fixed;
-                bottom: 0;
-            }
-            /* Start the vertical centering */
-            .site-wrapper-inner {
-                vertical-align: middle;
-            }
-            /* Handle the widths */
-            .masthead,
-            .mastfoot,
-            .cover-container {
-                width: 100%; /* Must be percentage or pixels for horizontal alignment */
-            }
-        }
-        @media (min-width: 992px) {
-            .masthead,
-            .mastfoot,
-            .cover-container {
-                width: 800px;
+            .params {
+                padding: 12px 4vw 8px 4vw;
             }
         }
     </style>
 </head>
-
 <body>
-
-<div class="site-wrapper">
-    <div class="site-wrapper-inner">
-        <div class="cover-container">
-            <div class="masthead clearfix">
-                <div class="inner">
-                    <h3 class="masthead-brand"></h3>
-                </div>
-            </div>
-            <div class="inner cover" id="">
-                <!--<img id="logo" src='favicon.ico' class="cover-heading" />-->
-                <h1 id="title" class="cover-heading">¡Parte la Noche!</h1>
-                <div id="marker"></div>
-                <h1 id="params" class="cover-heading">
-                    <p>                   
-	                    <button id="button-dec-initial" class="btn-inc-dec" onclick="javascript: decreaseInitialTime()"><</button>
-	                    desde
-	                    <span id="initial-hour"></span>
-	                    <button id="button-inc-initial" class="btn-inc-dec" onclick="javascript: increaseInitialTime()">></button>
-	                    <button id="button-now" class="btn-now" hidden onclick="javascript: setInitialTimeToNow()">ahora</button>
-	                    <!-- <span id="initial-end-separator">|</span>	                                         -->
-                    </p>                    
-                    <p>
-                    	<button id="button-dec-target" class="btn-inc-dec" onclick="javascript: decreaseTargetTime()"><</button>
-	                    hasta
-	                    <span id="target-hour"></span>
-	                    <button id="button-inc-target" class="btn-inc-dec" onclick="javascript: increaseTargetTime()">></button>
-                    </p>
-                    <div id="daylight-message"></div>
-                    <p id="total-time">
-	                    Tiempo a partir:
-	                    <span id="total-shifts-time">Tiempo a partir</span>
-                    </p>                     
-                    <p>
-	                    <button id="button-dec-shift" class="btn-inc-dec" onclick="javascript: decreaseShiftCount()">-</button>
-	                    <span id="current-shifts"></span>
-	                    turnos
-	                    <button id="button-inc-shift" class="btn-inc-dec" onclick="javascript: increaseShiftCount()">+</button>
-                    </p>                    
-                </h1>
-
-                <div id="initial-time" class="time"></div>
-                <div id="shifts">
-                    
-                </div>
-                
-                <p id="buttons" class="lead">                    
-                    <a href="javascript: recalculate()" class="btn btn-lg btn-default">recalcular</a>
-                    <a id="clock-button" href="javascript: stopStartClock()" class="btn btn-lg btn-default">Parar</a>
-                </p>
-                <p>
-                    Si te gusta ParteLaNoche, considera contribuir a su mantenimiento con una donación.
-                    <form action="https://www.paypal.com/donate" method="post" target="_top">
-						<input type="hidden" name="hosted_button_id" value="RQCP4EZ7YHRYW" />
-						<input type="image" src="https://www.paypalobjects.com/es_ES/ES/i/btn/btn_donate_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
-						<img alt="" border="0" src="https://www.paypal.com/es_ES/i/scr/pixel.gif" width="1" height="1" />
-					</form>
-                </p>
-                <p>
-                    <a href="javascript: shareOnFacebook()">¡Compártelo en Facebook!</a>
-                </p>
-            </div>           
+<div class="container">
+    <div class="header">
+        <img src="logo.png" alt="Logo" style="height:54px;width:auto;margin-right:16px;vertical-align:middle;border-radius:8px;background:transparent;opacity:0.92;" />
+        <h1>Parte la Noche</h1>
+    </div>
+    <div class="params">
+        <div class="params-row">
+            <button class="btn btn-small" id="dec-initial">&lt;</button>
+            <span class="params-label">desde</span>
+            <span id="initial-hour"></span>
+            <button class="btn btn-small" id="inc-initial">&gt;</button>
+            <button class="btn btn-small" id="now">ahora</button>
+        </div>
+        <div class="params-row">
+            <button class="btn btn-small" id="dec-target">&lt;</button>
+            <span class="params-label">hasta</span>
+            <span id="target-hour"></span>
+            <button class="btn btn-small" id="inc-target">&gt;</button>
+        </div>
+        <div class="params-row">
+            <button class="btn btn-small" id="dec-shift">-</button>
+            <span id="current-shifts"></span> <span class="params-label">turnos</span>
+            <button class="btn btn-small" id="inc-shift">+</button>
+            <button class="btn btn-small" id="names-btn">residentes</button>
+        </div>
+        <div class="params-row">
+            <span id="total-time"></span>
         </div>
     </div>
+    <div class="time" id="initial-time"></div>
+    <div id="shifts"></div>
+    <div style="margin:18px 0;">
+        <button class="btn" id="recalc">Recalcular</button>
+    </div>
+    <div id="marker" style="position: absolute; left: 0; right: 0; pointer-events: none;"></div>
 </div>
-<div align="center" class="footer">
-    <div id="visitor_counter"><script type="text/javascript" src="visitors_js.php"></script></div>
-  Hecho con cariño <b>♥</b> para los residentes de Cirugía Ortopédica y Traumatología del Hospital Clínic de Barcelona.<br/>Para cualquier consulta, contacta a <a href="mailto:lezkafree+partelanoche@gmail.com" target="_blank">Lezka</a>
+<div class="footer">
+    Hecho con cariño ♥ para los residentes de COT del Hospital Clínic de Barcelona.<br>
+    Contacta: <a href="mailto:lezkafree+partelanoche@gmail.com">Lezka</a>
 </div>
-
-<!-- Bootstrap core JavaScript
-================================================== -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script src="jquery.cookie.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<div id="names-modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.25);z-index:100;justify-content:center;align-items:center;">
+  <div style="background:#fff;padding:24px 18px 18px 18px;border-radius:16px;box-shadow:0 2px 12px 0 rgba(0,0,0,0.12);min-width:320px;max-width:90vw;">
+    <h2 style="margin-top:0;font-size:1.2em;color:#00796b;text-align:center;">Asignar nombres a los turnos</h2>
+    <form id="names-form">
+      <!-- Shift name inputs will be injected here -->
+    </form>
+    <div style="text-align:center;margin-top:18px;">
+      <button type="button" class="btn" id="names-save">Guardar</button>
+      <button type="button" class="btn" id="names-clear">Quitar nombres</button>
+      <button type="button" class="btn" id="names-cancel">Cerrar</button>
+    </div>
+  </div>
+</div>
 <script>
-    const MINMUM_TARGET_HOUR = 5;
-    const MAXIMUM_TARGET_HOUR = 11;
+// --- State ---
+let numShifts = 2;
+let targetHour = 8, targetMinutes = 0;
+let initialHour = 22, initialMinutes = 0;
+let referenceTime = createDate(initialHour, initialMinutes); // Always static
+const MIN_TARGET = 5, MAX_TARGET = 11;
+let shiftNames = Array(numShifts).fill("");
 
-    var interval = null;
-    var markerInterval = null;
-    var numShifts = 2;
-    var targetHour = 8;
-    var targetMinutes = 0;
-    var initialHour = 22;
-    var initialMinutes = 0;
-    var millisecondsPerShift;
-    var targetMilliseconds;
-    var isClockTicking;
-    var daylightSavingDifference = 0;
-    var useCurrentTime = true;
-    var referenceTime = new Date();
-    var shifts = [];
-
-    function calculateMillisecondsToTargetHour(){
-        var startingDate = useCurrentTime ? referenceTime : createDate(initialHour, initialMinutes);
-     
-        var hoursleft = targetHour-startingDate.getHours();
-        var minutesleft = targetMinutes-startingDate.getMinutes();
-        var secondsleft = 0-startingDate.getSeconds();
-        var currentMilliseconds = startingDate.getTime();
-
-        if(hoursleft < 0){
-          hoursleft += 24;
+// --- Functions ---
+function pad(n) { return n.toString().padStart(2, '0'); }
+function formatTime(h, m) { return `${pad(h)}:${pad(m)} h`; }
+function formatNow() {
+    const d = new Date();
+    return `${pad(d.getHours())}:${pad(d.getMinutes())} h`;
+}
+function convertMs(ms) {
+    const h = Math.floor(ms / 36e5), m = Math.floor((ms % 36e5) / 6e4);
+    if (m > 0) {
+        return `${h} horas ${pad(m)} minutos`;
+    } else {
+        return `${h} horas`;
+    }
+}
+function createDate(h, m) {
+    const d = new Date();
+    d.setHours(h, m, 0, 0);
+    return d;
+}
+function msToTarget() {
+    const start = referenceTime;
+    let h = targetHour - start.getHours();
+    let m = targetMinutes - start.getMinutes();
+    if (h < 0 || (h === 0 && m < 0)) h += 24;
+    return h * 3600000 + m * 60000;
+}
+function calcShifts() {
+    const msTotal = msToTarget();
+    const msPer = msTotal / numShifts;
+    let ms = referenceTime.getTime();
+    let html = '';
+    for (let i = 1; i <= numShifts; i++) {
+        ms += msPer;
+        const d = new Date(ms);
+        html += `<div class='shift-card'><div class='shift-title'>Turno ${i}${shiftNames[i-1] ? ` — <span class='residente-name'>${shiftNames[i-1]}</span>` : ''}</div><div class='shift-duration'>${convertMs(msPer)}</div></div>`;
+        html += `<div class='shift-end-label' style="text-align:center;margin-bottom:10px;font-size:1.15em;color:#00796b;font-weight:400;letter-spacing:0.01em;">${pad(d.getHours())}:${pad(d.getMinutes())} h</div>`;
+    }
+    document.getElementById('shifts').innerHTML = html;
+    document.getElementById('total-time').textContent = 'Tiempo total: ' + convertMs(msTotal);
+}
+function getShiftRanges() {
+    const msTotal = msToTarget();
+    const msPer = msTotal / numShifts;
+    let ms = referenceTime.getTime();
+    let ranges = [];
+    for (let i = 1; i <= numShifts; i++) {
+        let start = ms;
+        ms += msPer;
+        let end = ms;
+        ranges.push({start, end, idx: i});
+    }
+    return ranges;
+}
+function updateMarker() {
+    // Remove any existing marker
+    const oldMarkers = document.querySelectorAll('#shift-marker, #pre-shift-marker');
+    oldMarkers.forEach(m => m.remove());
+    const now = Date.now();
+    const ranges = getShiftRanges();
+    const shiftsDiv = document.getElementById('shifts');
+    const shiftCards = Array.from(shiftsDiv.querySelectorAll('.shift-card'));
+    // If before the first shift, show marker between general panel and shifts
+    if (now < ranges[0].start) {
+        let container = document.querySelector('.container');
+        let marker = document.createElement('div');
+        marker.id = 'pre-shift-marker';
+        marker.style.position = 'relative';
+        marker.style.left = '50%';
+        marker.style.transform = 'translateX(-50%)';
+        marker.style.width = 'min(700px, 98vw)';
+        marker.style.height = '5px';
+        marker.style.background = 'rgba(255,0,0,0.35)';
+        marker.style.zIndex = 30;
+        marker.style.borderRadius = '3px';
+        marker.style.display = 'flex';
+        marker.style.alignItems = 'center';
+        marker.style.margin = '18px auto 18px auto';
+        marker.style.pointerEvents = 'none';
+        // Left label: before shifts
+        const leftLabel = document.createElement('span');
+        leftLabel.textContent = `Antes de partir`;
+        leftLabel.style.marginLeft = '0';
+        leftLabel.style.background = 'rgba(255,255,255,0.95)';
+        leftLabel.style.color = '#00796b';
+        leftLabel.style.fontWeight = 'bold';
+        leftLabel.style.fontSize = '1em';
+        leftLabel.style.padding = '1px 8px';
+        leftLabel.style.borderRadius = '8px';
+        leftLabel.style.boxShadow = '0 1px 4px 0 rgba(0,0,0,0.07)';
+        // Live timer (current time) after left label
+        const timerLabel = document.createElement('span');
+        timerLabel.style.marginLeft = '10px';
+        timerLabel.style.background = 'rgba(255,255,255,0.95)';
+        timerLabel.style.color = '#b71c1c';
+        timerLabel.style.fontSize = '1em';
+        timerLabel.style.fontWeight = 'bold';
+        timerLabel.style.padding = '1px 8px';
+        timerLabel.style.borderRadius = '8px';
+        timerLabel.style.boxShadow = '0 1px 4px 0 rgba(0,0,0,0.07)';
+        const d = new Date(now);
+        timerLabel.textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+        marker.appendChild(leftLabel);
+        marker.appendChild(timerLabel);
+        // Insert marker after the configuration box (params)
+        const paramsBox = document.querySelector('.params');
+        if (paramsBox && paramsBox.parentNode) {
+            paramsBox.parentNode.insertBefore(marker, paramsBox.nextSibling);
         }
-        else if (hoursleft == 0 && targetMinutes < startingDate.getMinutes())
-        {
-            hoursleft = 24;
-        }        
-
-        var millisecondsToTargetHour = (secondsleft * 1000) 
-                                        + (minutesleft * 60 * 1000) 
-                                        + (hoursleft * 60 * 60 * 1000);
-                
-        targetMilliseconds = currentMilliseconds + millisecondsToTargetHour;
-
-        daylightSavingDifference = getDaylightSavingDifference(currentMilliseconds, targetMilliseconds);
-
-        millisecondsToTargetHour += daylightSavingDifference * 60 * 60 * 1000;
-
-        return millisecondsToTargetHour;
+        return;
     }
-
-    function calculateShifts()
-    {
-        var currentMilliseconds;
-        if (useCurrentTime)
-            currentMilliseconds = referenceTime.getTime();
-        else
-            currentMilliseconds = createDate(initialHour, initialMinutes).getTime();
-        
-        millisecondsToTargetHour = calculateMillisecondsToTargetHour();
-        millisecondsPerShift = millisecondsToTargetHour / numShifts;                        
-
-        var millisecondsToNextShift = currentMilliseconds;
-
-        shifts = [];
-        for (var i = 1; i <= numShifts; i++) {        	
-            millisecondsToNextShift += millisecondsPerShift;
-            printShift(millisecondsToNextShift, i);
-            shifts.push({'endTime': millisecondsToNextShift, 'number': i});
-        };
-
-        updateTotalTime();
-    }
-
-    function updateTotalTime(){
-        $('#total-shifts-time').html(convertMillisecondsToReadableTime(millisecondsToTargetHour));    	
-    }
-
-    function createDate(hours, minutes){
-        var newDate = new Date();
-        newDate.setHours(hours);
-        newDate.setMinutes(minutes);
-        newDate.setSeconds(0);
-        newDate.setMilliseconds(0);
-
-        //if (hours <= 12 && referenceTime.getHours() <= 23)        
-          //  newDate.setDate(newDate.getDate() + 1);
-
-        if (hours < 12 && referenceTime.getHours() > 12)        
-            newDate.setDate(newDate.getDate() + 1);
-
-        if (hours > 12 && referenceTime.getHours() <= 12)        
-            newDate.setDate(newDate.getDate() - 1);
-
-
-
-
-
-        return newDate;
-    }
-
-    function printShift(endTime, shiftId)
-    {
-        //if the shift is already painted, we update the duration time
-        if ($('#shift-'+shiftId).length > 0)
-        {
-            $('#shift-'+shiftId+' .shift-duration').html(convertMillisecondsToReadableTime(millisecondsPerShift));   
+    // Marker for current/active shift
+    for (let i = 0; i < ranges.length; i++) {
+        const card = shiftCards[i];
+        if (!card) continue;
+        let percent = 0;
+        if (now < ranges[i].start) {
+            percent = 0;
+        } else if (now > ranges[i].end) {
+            percent = 1;
+        } else {
+            percent = (now - ranges[i].start) / (ranges[i].end - ranges[i].start);
         }
-
-        //if the shift doesn't exist we append it
-        if ($('#shifts #end-shift-'+shiftId).length == 0)
-        {
-            $('#shifts').append(shiftDivTag(shiftId));
+        const marker = document.createElement('div');
+        marker.id = 'shift-marker';
+        marker.style.position = 'absolute';
+        marker.style.left = '50%';
+        marker.style.transform = 'translateX(-50%)';
+        marker.style.width = 'min(700px, 98vw)'; // Wider marker if space allows
+        marker.style.height = '5px';
+        marker.style.background = 'rgba(255,0,0,0.35)';
+        marker.style.zIndex = 30;
+        marker.style.borderRadius = '3px';
+        marker.style.display = 'flex';
+        marker.style.alignItems = 'center';
+        marker.style.pointerEvents = 'none';
+        card.style.position = 'relative';
+        marker.style.top = (card.clientHeight * percent) + 'px';
+        // Left label: current shift and doctor name
+        const leftLabel = document.createElement('span');
+        leftLabel.innerHTML = `Turno ${i+1}${shiftNames[i] ? ` — <span class='residente-name'>${shiftNames[i]}</span>` : ''}`;
+        leftLabel.style.marginLeft = '0';
+        leftLabel.style.background = 'rgba(255,255,255,0.95)';
+        leftLabel.style.color = '#00796b';
+        leftLabel.style.fontWeight = 'bold';
+        leftLabel.style.fontSize = '1em';
+        leftLabel.style.padding = '1px 8px';
+        leftLabel.style.borderRadius = '8px';
+        leftLabel.style.boxShadow = '0 1px 4px 0 rgba(0,0,0,0.07)';
+        // Live timer (current time) after left label
+        const timerLabel = document.createElement('span');
+        timerLabel.style.marginLeft = '10px';
+        timerLabel.style.background = 'rgba(255,255,255,0.95)';
+        timerLabel.style.color = '#b71c1c';
+        timerLabel.style.fontSize = '1em';
+        timerLabel.style.fontWeight = 'bold';
+        timerLabel.style.padding = '1px 8px';
+        timerLabel.style.borderRadius = '8px';
+        timerLabel.style.boxShadow = '0 1px 4px 0 rgba(0,0,0,0.07)';
+        const d = new Date(now);
+        timerLabel.textContent = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+        // Countdown label (time left in shift) at far right
+        const countdownLabel = document.createElement('span');
+        countdownLabel.style.marginLeft = 'auto';
+        countdownLabel.style.background = 'rgba(255,255,255,0.95)';
+        countdownLabel.style.color = '#00796b';
+        countdownLabel.style.fontSize = '1em';
+        countdownLabel.style.fontWeight = 'bold';
+        countdownLabel.style.padding = '1px 8px';
+        countdownLabel.style.borderRadius = '8px';
+        countdownLabel.style.boxShadow = '0 1px 4px 0 rgba(0,0,0,0.07)';
+        // Calculate time left in shift
+        let msLeft = Math.max(0, ranges[i].end - now);
+        let hLeft = Math.floor(msLeft / 3600000);
+        let mLeft = Math.floor((msLeft % 3600000) / 60000);
+        let sLeft = Math.floor((msLeft % 60000) / 1000);
+        let leftText = hLeft > 0 ? `${hLeft}h ` : '';
+        leftText += mLeft > 0 ? `${mLeft}m ` : '';
+        leftText += `${sLeft}s`;
+        countdownLabel.textContent = leftText.trim();
+        marker.appendChild(leftLabel);
+        marker.appendChild(timerLabel);
+        marker.appendChild(countdownLabel);
+        if (now >= ranges[i].start && now <= ranges[i].end) {
+            card.appendChild(marker);
+            break;
         }
-
-        var daylightShiftDifference = getDaylightSavingDifference(endTime - millisecondsPerShift, endTime);        
-        var shiftTime = new Date(endTime);
-        var mins = ('0'+shiftTime.getMinutes()).slice(-2);
-        var secs = ('0'+shiftTime.getSeconds()).slice(-2);
-        var hours = shiftTime.getHours();
-
-        $('#end-shift-'+shiftId).html(hours+':'+mins +':' +secs+' h');
-
-        if (daylightShiftDifference != 0)
-            $('#daylight-'+shiftId).html("ya se ha tenido en cuenta que durante este turno se cambiará la hora ("+daylightMessage()+")");            
-        else
-            $('#daylight-'+shiftId).hide();
-    }
-
-    function shiftDivTag(shiftId){
-        return '<div id="shift-'+shiftId+'" class="shift">turno '+shiftId
-        +' <span class="shift-duration">'+convertMillisecondsToReadableTime(millisecondsPerShift)+'</span>'
-        +'<div id="daylight-'+shiftId+'" class="shift-daylight">saving time</div>'
-        +'</div>'        
-                    +'<div id="end-shift-'+shiftId+'" class="time"></div>';
-    }
-
-    function addMillisecondsToCurrentDate(milliseconds){
-        var currentMilliseconds = Date.now();
-        totalMilliseconds = currentMilliseconds + milliseconds;
-        return totalMilliseconds;
-    }
-
-    function convertMillisecondsToReadableTime(milliseconds){     
-        var hours = Math.floor(milliseconds / 36e5),
-            mins = Math.floor((milliseconds % 36e5) / 6e4),
-            secs = Math.floor((milliseconds % 6e4) / 1000);
-            return hours+' horas '+('0'+mins).slice(-2)+' minutos';  
-    }
-
-    function increaseShiftCount() {
-        if (numShifts < 10)
-        {
-            numShifts++;
-            updateShitfCount(); 
+        if (i === 0 && now < ranges[0].start) {
+            card.appendChild(marker);
+            break;
         }
-    }
-
-    function decreaseShiftCount() {
-        if (numShifts > 1){
-            numShifts--;
-            updateShitfCount();
-        }        
-    }
-
-    function updateShitfCount(){
-        $('#current-shifts').html(numShifts);        
-        $('#shifts').empty();
-        calculateShifts();
-    }
-
-    function increaseTargetTime() {
-        if (targetHour > 10)
-            return;
-
-        if (targetMinutes == 45)
-        {
-            targetMinutes = 0;
-            targetHour++;
-        }
-        else 
-            targetMinutes += 15;
-
-        updateTargetHour();
-    }
-
-    function decreaseTargetTime() {
-        if (targetHour < 4 || (initialHour < 12 && targetHour <= initialHour))
-        	return;
-        
-        if (targetMinutes == 0)
-        {
-            targetMinutes = 45;
-            targetHour--;
-        }
-        else
-            targetMinutes -= 15;
-
-
-        updateTargetHour();
-
-        //if (targetHour <= initialHour && initialHour < 10){
-        //    initialHour = targetHour - 1;
-        //    updateInitialHour();
-        //}
-    }
-
-    function setInitialTimeFromCurrent(){
-        if (useCurrentTime)
-        {
-            initialHour = referenceTime.getHours();
-            initialMinutes  = (Math.round(referenceTime.getMinutes()/15) * 15) % 60;
-            useCurrentTime = false;
-            $('#button-now').show();
+        if (i === ranges.length - 1 && now > ranges[ranges.length - 1].end) {
+            card.appendChild(marker);
+            break;
         }
     }
+}
+function updateUI() {
+    document.getElementById('initial-hour').innerHTML = `${pad(referenceTime.getHours())}:${pad(referenceTime.getMinutes())} h`;
+    document.getElementById('initial-time').textContent = `${pad(referenceTime.getHours())}:${pad(referenceTime.getMinutes())} h`;
+    document.getElementById('target-hour').textContent = formatTime(targetHour, targetMinutes);
+    document.getElementById('current-shifts').textContent = numShifts;
+    calcShifts();
+    setTimeout(updateMarker, 10);
+}
 
-    function setInitialTimeToNow() {
-        useCurrentTime = true;
-        updateInitialHour();
-        $('#button-now').hide();
+// --- State ---
+function saveState() {
+    localStorage.setItem('pln_initialHour', initialHour);
+    localStorage.setItem('pln_initialMinutes', initialMinutes);
+    localStorage.setItem('pln_targetHour', targetHour);
+    localStorage.setItem('pln_targetMinutes', targetMinutes);
+    localStorage.setItem('pln_numShifts', numShifts);
+    localStorage.setItem('pln_shiftNames', JSON.stringify(shiftNames));
+}
+function loadState() {
+    const ih = localStorage.getItem('pln_initialHour');
+    const im = localStorage.getItem('pln_initialMinutes');
+    const th = localStorage.getItem('pln_targetHour');
+    const tm = localStorage.getItem('pln_targetMinutes');
+    const ns = localStorage.getItem('pln_numShifts');
+    const sn = localStorage.getItem('pln_shiftNames');
+    if (ih !== null && im !== null && th !== null && tm !== null && ns !== null) {
+        initialHour = parseInt(ih);
+        initialMinutes = parseInt(im);
+        targetHour = parseInt(th);
+        targetMinutes = parseInt(tm);
+        numShifts = parseInt(ns);
+        referenceTime = createDate(initialHour, initialMinutes);
     }
-
-    function increaseInitialTime() {
-        setInitialTimeFromCurrent();
-        
-        if (initialHour > 23 || (initialHour < 12  && initialHour > targetHour - 2))
-            return;                        
-        
-        if (initialMinutes == 45)
-        {
-            initialMinutes = 0;
-            if (initialHour == 23)
-                initialHour = 0;
-            else
-                initialHour++;
-        }
-        else
-            initialMinutes += 15;
-
-        updateInitialHour();
+    if (sn) {
+        try { shiftNames = JSON.parse(sn); } catch { shiftNames = Array(numShifts).fill(""); }
+    } else {
+        shiftNames = Array(numShifts).fill("");
     }
+}
 
-    function decreaseInitialTime() {        
-        setInitialTimeFromCurrent(); 
-        
-        if (initialHour > 12  && initialHour < 18)
-            return;           
-
-        if (initialMinutes == 0)
-        {
-            initialMinutes = 45;
-            if (initialHour == 0)
-                initialHour = 23;
-            else
-                initialHour--;
-        }
-        else
-            initialMinutes -= 15;        
-
-        updateInitialHour();
+// --- Button handlers ---
+document.getElementById('inc-shift').onclick = () => { if (numShifts < 10) { numShifts++; saveState(); updateUI(); } };
+document.getElementById('dec-shift').onclick = () => { if (numShifts > 1) { numShifts--; saveState(); updateUI(); } };
+document.getElementById('inc-target').onclick = () => {
+    if (targetHour < MAX_TARGET || (targetHour === MAX_TARGET && targetMinutes < 45)) {
+        if (targetMinutes === 45) { targetMinutes = 0; targetHour++; }
+        else targetMinutes += 15;
+        saveState();
+        updateUI();
     }
-
-    function updateTargetHour(){
-        $('#target-hour').html(targetHour+':'+('0'+targetMinutes).slice(-2)+' h');
-        showHideTargetButtons();
-        calculateShifts();
+};
+document.getElementById('dec-target').onclick = () => {
+    if (targetHour > MIN_TARGET || (targetHour === MIN_TARGET && targetMinutes > 0)) {
+        if (targetMinutes === 0) { targetMinutes = 45; targetHour--; }
+        else targetMinutes -= 15;
+        saveState();
+        updateUI();
     }
-
-    function showHideTargetButtons(){
-        if (targetHour == MINMUM_TARGET_HOUR)
-            $('#button-dec-target').disabled = true;
-        else
-            $('#button-dec-target').disabled = false;
-
-        if (targetHour == MAXIMUM_TARGET_HOUR)
-            $('#button-inc-target').hide();            
-        else
-            $('#button-inc-target').show();
-    }
-
-    function updateInitialHour() {
-
-        if (useCurrentTime){
-            $('#initial-hour').html('<span class="current-time-label">Ahora</span> <span class="current-time">('+formatRightNow()+')</span>');            
-            $('#initial-time').html(formatRightNow());
-            initialHour = new Date().getHours();
-        }            
-        else{
-            $('#initial-hour').html(initialHour+':'+('0'+initialMinutes).slice(-2)+' h');
-            $('#initial-time').html(formatHoursMinutes(initialHour, initialMinutes));
-        }            
-        
-        calculateShifts();
-    }
-
-    function formatRightNow(){
-        return referenceTime.getHours()+':'+('0'+referenceTime.getMinutes()).slice(-2)+':'+('0'+referenceTime.getSeconds()).slice(-2)+' h';
-    }
-
-    function formatHoursMinutes(hours, minutes){
-        return hours+':'+('0'+minutes).slice(-2)+':00 h';
-    }
-
-    function stopStartClock() {
-
-        isClockTicking ? pause() : start();                
-    }
-
-    function start(){
-        calculateShifts();
-        
-        interval = setInterval(calculateShifts, 1000);
-        isClockTicking = true;
-        refreshStopStartButton();    
-    }
-
-    function saveSession(){        
-        $.cookie("referenceTime", referenceTime.getTime(), { expires : 1 });
-        $.cookie("initialHour", initialHour, { expires : 1 });
-        $.cookie("initialMinutes", initialMinutes, { expires : 1 });
-        $.cookie("targetHour", targetHour, { expires : 1 });
-        $.cookie("targetMinutes", targetMinutes, { expires : 1 });
-        $.cookie("numShifts", numShifts, { expires : 1 });
-        $.cookie("saved", true, { expires : 1 });
-    }
-
-    function readSession(){        
-        if ($.cookie('saved') == 'true')
-        {
-            referenceTime = new Date(parseInt($.cookie('referenceTime')));
-            initialHour = parseInt($.cookie('initialHour'));
-            initialMinutes = parseInt($.cookie('initialMinutes'));
-            targetHour = parseInt($.cookie('targetHour'));
-            targetMinutes = parseInt($.cookie('targetMinutes'));
-            numShifts = parseInt($.cookie('numShifts'));
-        }
-    }
-
-    function clearSession(){
-        $.removeCookie("referenceTime");
-        $.removeCookie("initialHour");
-        $.removeCookie("initialMinutes");
-        $.removeCookie("targetHour");
-        $.removeCookie("targetMinutes");
-        $.removeCookie("numShifts");
-        $.cookie("saved", false, { expires : 20 * 365 });
-    }
-
-    function run(){        
-        updateInitialHour();
-        updateTargetHour();
-        updateShitfCount();
-        calculateShifts();        
-    }
-
-    function recalculate(){
-        clearSession();
-        referenceTime = new Date();
-        run();
-        saveSession();
-    }
-
-    function pause(){
-        if (interval)
-            clearInterval(interval);
-
-        isClockTicking = false;
-        refreshStopStartButton();
-    }
-
-    function refreshStopStartButton()
-    {
-        isClockTicking ? $("#clock-button").html("parar") : $("#clock-button").html("iniciar");
-    }
-
-    function startMarker(){
+};
+document.getElementById('inc-initial').onclick = () => {
+    // Always round up to the next quarter hour
+    let totalMinutes = initialHour * 60 + initialMinutes;
+    let nextQuarter = Math.ceil((totalMinutes + 1) / 15) * 15;
+    if (nextQuarter >= 24 * 60) nextQuarter = 0;
+    initialHour = Math.floor(nextQuarter / 60);
+    initialMinutes = nextQuarter % 60;
+    referenceTime = createDate(initialHour, initialMinutes);
+    saveState();
+    updateUI();
+};
+document.getElementById('dec-initial').onclick = () => {
+    // Always round down to the previous quarter hour
+    let totalMinutes = initialHour * 60 + initialMinutes;
+    let prevQuarter = Math.floor((totalMinutes - 1) / 15) * 15;
+    if (prevQuarter < 0) prevQuarter = 24 * 60 - 15;
+    initialHour = Math.floor(prevQuarter / 60);
+    initialMinutes = prevQuarter % 60;
+    referenceTime = createDate(initialHour, initialMinutes);
+    saveState();
+    updateUI();
+};
+document.getElementById('now').onclick = () => {
+    const now = new Date();
+    initialHour = now.getHours();
+    initialMinutes = now.getMinutes();
+    referenceTime = createDate(initialHour, initialMinutes);
+    saveState();
+    updateUI();
+};
+document.getElementById('recalc').onclick = () => {
+    referenceTime = createDate(initialHour, initialMinutes);
+    saveState();
+    updateUI();
+};
+// --- Init ---
+loadState();
+updateUI();
+let markerInterval;
+function startMarkerInterval() {
+    if (markerInterval) clearInterval(markerInterval);
+    markerInterval = setInterval(() => {
         updateMarker();
-        markerInterval = setInterval(updateMarker, 1000)        
+    }, 1000);
+}
+startMarkerInterval();
+
+// --- Shift names ---
+function openNamesModal() {
+    const modal = document.getElementById('names-modal');
+    const form = document.getElementById('names-form');
+    form.innerHTML = '';
+    for (let i = 0; i < numShifts; i++) {
+        form.innerHTML += `<div style='margin-bottom:10px;'><label style='font-weight:500;color:#00796b;'>Turno ${i+1}:</label> <input type='text' style='padding:4px 8px;border-radius:6px;border:1px solid #b2dfdb;width:60%;' value='${shiftNames[i] || ''}' data-shift='${i}' /></div>`;
     }
-
-    function updateMarker(){
-        var now = new Date();         
-        var currentMilliseconds = now.getTime();
-        var startingDate = useCurrentTime ? referenceTime : createDate(initialHour, initialMinutes);
-        var endDate = createDate(targetHour, targetMinutes);       
-
-        //if (currentMilliseconds > shifts[shifts.length - 1].endTime)
-        if (currentMilliseconds > endDate.getTime())
-            moveMarker(now, 0, startingDate);
-        else if (currentMilliseconds < startingDate.getTime())
-        {
-        	moveMarker(now, -1, startingDate);
-        }	            
-        else
-        {
-            for (var i = shifts.length - 1; i >= 0; i--) {            
-                if (currentMilliseconds < shifts[i].endTime)
-                {
-                    if (i == 0)
-                        moveMarker(now, 1, startingDate);
-                    else
-                        moveMarker(now, shifts[i].number , shifts[i - 1].endTime);                    
-                }
-            }
-        }       
-
-    }
-
-    function moveMarker(currentTime, shiftId, refTime){
-
-        var currentTimeString = currentTime.getHours()+':'+('0'+currentTime.getMinutes()).slice(-2)+':'+('0'+currentTime.getSeconds()).slice(-2)+' h';
-        var markerTop = 0;
-        $('#marker').html(currentTimeString);
-
-        if (shiftId == 0)
-        {
-            markerTop = $('#shifts').position().top + $('#shifts').height();
-            $('#marker').css('color', 'navajowhite');
-            $('#marker').html('Fin de Noche - '+currentTimeString);
-        }
-        else if (shiftId == -1)
-        {
-            markerTop = $('#shifts').position().top - $('#marker').height();
-            $('#marker').css('color', 'navajowhite');
-            $('#marker').html('Pre-partición - '+currentTimeString);
-        }
-        else
-        {
-            var currentMilliseconds = currentTime.getTime();
-            var baseCurrentShiftMilliseconds = currentMilliseconds - refTime;
-            var pixelsWithinShift = baseCurrentShiftMilliseconds * $('#shift-'+shiftId).height() / millisecondsPerShift;
-
-            $('#marker').css('color', 'yellow');
-            $('#marker').html('turno '+shiftId+' - '+currentTimeString);         
-            var shiftTop = $('#shift-'+shiftId).position().top;
-            markerTop = shiftTop + pixelsWithinShift;
-        }
-        
-        $('#marker').css('top', markerTop +'px');
-    }
-
-    function isDST(t) { //t is the date object to check, returns true if daylight saving time is in effect.
-        var jan = new Date(t.getFullYear(),0,1);
-        var jul = new Date(t.getFullYear(),6,1);
-        return Math.min(jan.getTimezoneOffset(),jul.getTimezoneOffset()) == t.getTimezoneOffset();  
-    }
-
-    function getDaylightSavingDifference(initialMilliseconds, targetMilliseconds){
-        var initialDate = new Date(initialMilliseconds);
-        var targetDate = new Date(targetMilliseconds);
-
-        return isDST(initialDate) - isDST(targetDate);        
-    }
-
-    function daylightMessage(){
-        if (daylightSavingDifference == -1)
-            return 'a las 2h serán las 3h';
-        else if (daylightSavingDifference == 1)
-            return 'a las 3h serán las 2h';
-        else
-            return '';
-    }
-
-    function setDaylightMessage(){
-        var message = daylightMessage();
-        if (message.length > 0){
-            $('#daylight-message').show();
-            $('#daylight-message').html('en nuestros cálculos ya tenemos en cuenta que durante esta guardia se cambiará la hora ('+ message +')');        
-        }
-    }
-
-    //start();
-    readSession();
-    run();
-    setDaylightMessage();
-    startMarker();
-    
+    modal.style.display = 'flex';
+}
+document.getElementById('names-btn').onclick = openNamesModal;
+document.getElementById('names-cancel').onclick = () => {
+    document.getElementById('names-modal').style.display = 'none';
+};
+document.getElementById('names-save').onclick = () => {
+    const inputs = document.querySelectorAll('#names-form input');
+    shiftNames = Array.from(inputs).map(input => input.value.trim());
+    document.getElementById('names-modal').style.display = 'none';
+    saveState();
+    updateUI();
+};
+document.getElementById('names-clear').onclick = () => {
+    shiftNames = Array(numShifts).fill("");
+    document.getElementById('names-modal').style.display = 'none';
+    saveState();
+    updateUI();
+};
+// Fix modal display: ensure modal is in the DOM and event listeners are attached after DOM is loaded
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('names-btn').onclick = openNamesModal;
+  document.getElementById('names-cancel').onclick = () => {
+      document.getElementById('names-modal').style.display = 'none';
+  };
+  document.getElementById('names-save').onclick = () => {
+      const inputs = document.querySelectorAll('#names-form input');
+      shiftNames = Array.from(inputs).map(input => input.value.trim());
+      document.getElementById('names-modal').style.display = 'none';
+      saveState();
+      updateUI();
+  };
+  document.getElementById('names-clear').onclick = () => {
+      shiftNames = Array(numShifts).fill("");
+      document.getElementById('names-modal').style.display = 'none';
+      saveState();
+      updateUI();
+  };
+});
 </script>
 </body>
 </html>
